@@ -1,21 +1,29 @@
 {
   "name": "mural-api",
+  "type": "module",
   "version": "1.0.0",
   "description": "API Rest que permite usuarios postar, atualizar e excluir mensagens de um mural",
-  "main": "index.js",
+  "main": "src/index.js",
   "scripts": {
     "start": "node src/index.js",
-    "test": "jest"
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js"
   },
   "author": "João Kowacic",
   "license": "ISC",
   "devDependencies": {
     "jest": "^29.5.0",
+    "mongodb-memory-server": "^8.12.2",
     "supertest": "^6.3.3"
   },
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
     "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.0",
     "mongodb": "^5.1.0"
+  },
+  "jest": {
+    "transform": {}
   }
 }
