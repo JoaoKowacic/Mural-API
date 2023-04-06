@@ -22,6 +22,7 @@ routes.post('/user' ,async (req, res)=> {
     )
     if (!user){
         res.status(500).send({message: "Error creating user"})
+        return
     }
     res.status(201).json(user)
 })
@@ -37,6 +38,7 @@ routes.post('/login', async (req, res)=> {
     )
     if (!user) {
         res.status(400).send("Invalid Credentials");
+        return
     }
     res.json(user).status(200)
 })
@@ -45,6 +47,7 @@ routes.get('/message', authenticateToken, async (req, res) => {
     const messages = await messageController.index(client, req.email.email)
     if (!messages) {
         res.json({message: 'No posts found'}).status(400)
+        return
     }
     res.json(messages).status(200)
 })
@@ -52,7 +55,8 @@ routes.get('/message', authenticateToken, async (req, res) => {
 routes.get('/message/:id', authenticateToken, async (req, res) => {
     const message = await messageController.show(client, req.params.id)
     if (!message) {
-        res.json({message: 'Post not found'}).status(400)
+        res.status(400).json({message: 'Post not found'})
+        return
     }
     res.json(message).status(200)
 })
@@ -66,18 +70,21 @@ routes.post('/message', authenticateToken, async (req, res) => {
     )
     if (!message) {
         res.json({message: 'Error creating post'}).status(500)
+        return
     }
     res.json(message).status(201)
 })
 
-routes.put('/message/', authenticateToken, async (req, res) => {
+routes.put('/message/:id', authenticateToken, async (req, res) => {
     const updatedMessage = await messageController.update(
         client,
-        req.body.id,
-        req.body.changes
+        req.params.id,
+        req.body.title,
+        req.body.description
     )
     if (!updatedMessage) {
         res.json({message: 'Error updating post'}).status(500)
+        return
     }
     res.json(updatedMessage).status(200)
 })
@@ -89,6 +96,7 @@ routes.delete('/message/:id', authenticateToken, async (req, res) => {
     )
     if (deletedMessage.deletedCount != 1) {
         res.json({message: 'Error deleting post'}).status(500)
+        return
     }
     res.json({message: 'Post deleted successfully'}).status(200)
 })

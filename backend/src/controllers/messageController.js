@@ -1,3 +1,5 @@
+import { ObjectId } from "mongodb"
+
 export class MessageController {
    async create(client, title, description, email) {
       const messageData = {
@@ -9,14 +11,14 @@ export class MessageController {
       const messageDatabase = client.db('Mural').collection('messages')
 
       const messageId = await messageDatabase.insertOne(messageData)
-
+      
       return messageData
    }
 
    async delete(client, messageId) {
       const messageDatabase = client.db('Mural').collection('messages')
-
-      const message = await messageDatabase.deleteOne({_id: messageId})
+      const id = new ObjectId(messageId)
+      const message = await messageDatabase.deleteOne({_id: id})
 
       return message
    }
@@ -24,24 +26,27 @@ export class MessageController {
    async index(client, email) {
       const messageDatabase = client.db('Mural').collection('messages')
 
-      const messages = await messageDatabase.find({email}).toArray()
+      const messages = await messageDatabase.find({email: email}).toArray()
 
       return messages
    }
 
    async show(client, messageId) {
       const messageDatabase = client.db('Mural').collection('messages')
-
-      const message = await messageDatabase.findOne({_id: messageId})
+      const id = new ObjectId(messageId)
+      const message = await messageDatabase.findOne({_id: id})
 
       return message
    }
 
-   async update(client, messageId, changes) {
+   async update(client, messageId, title, description) {
+      const data = {$set : {
+         title: title,
+         description: description         
+      }}
       const messageDatabase = client.db('Mural').collection('messages')
-
-      const message = await messageDatabase.updateOne({_id: messageId}, changes)
-
+      const id = new ObjectId(messageId)
+      const message = await messageDatabase.updateOne({_id: id}, data)
       return message
    }
 }
