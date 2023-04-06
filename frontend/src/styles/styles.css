@@ -45,3 +45,19 @@ button {
 button:hover {
     opacity: 0.8;
 }
+.messages {
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+.message {
+    border: 2px solid #ccc;
+    padding: 20px;
+    margin: 20px;
+    max-width: 500px;
+    text-align: center;
+}

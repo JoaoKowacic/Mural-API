@@ -3,22 +3,40 @@ import { useNavigate } from "react-router-dom";
 import '../styles/styles.css';
 
 function Login() {
-  const [username, setUsername] = useState("");
+  const [email, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    navigate('/dashboard');
+  const handleSubmit = () => {
+    const credentials = { email, password };
+    fetch('http://localhost:3333/login', {
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      method: 'POST',
+      body: JSON.stringify(credentials)
+    })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Login failed');
+        }
+        return response.json();
+      })
+      .then(data => {
+        localStorage.setItem('token', data.token);
+        navigate('/dashboard', {
+            token: data.token
+        });
+      })
+      .catch(error => console.log(error));
   };
-
   return (
     <div>
         <h1>Login Page</h1>
-        <form onSubmit={handleSubmit}>
+        <form >
             <label>
-                Username:
-                <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} />
+                Email:
+                <input type="text" value={email} onChange={(e) => setUsername(e.target.value)} />
             </label>
             <br />
             <label>
@@ -26,7 +44,7 @@ function Login() {
                 <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
             </label>
             <br />
-            <button type="submit">Login</button>
+            <button type="button" onClick={handleSubmit}>Login</button>
         </form>
     </div>
   );
