@@ -20,6 +20,7 @@ export class UserController {
       await userDatabase.insertOne(userData)
       
       userData.token = token
+      userData.password = undefined
       return userData
    }
 
@@ -33,7 +34,6 @@ export class UserController {
             { email },
             process.env.TOKEN || '1'
          )
-
          user.token = token
          return user
       }

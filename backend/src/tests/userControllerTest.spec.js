@@ -35,12 +35,51 @@ describe('UserController', () => {
             .collection('users')
             .find()
             .toArray()
-        
+
         expect(users.length).toBe(1)
         expect(users[0].name).toBe('Test')
         expect(users[0].email).toBe('Test@gmail.com')
-        expect(users[0].password).toBe('password123')
-        expect(user.insertedId).toEqual(users[0]._id)
+        expect(users[0].password).not.toBe('password123')
+        expect(user._id).toEqual(users[0]._id)
+    })
+  })
+
+  describe('login', () => {
+    test('should return user object with token if email and password are correct', async () => {
+      const userController = new UserController()
+      const userData = {
+        name: 'Test',
+        email: 'Test@gmail.com',
+        password: 'password123'
+      }
+
+      const result = await userController.create(
+        client,
+        'Test', 
+        'Test@gmail.com', 
+        'password123'
+      )
+      
+      const user = await userController.login(client, 'Test@gmail.com', 'password123')
+      expect(user).toBeDefined()
+      expect(user.name).toBe(userData.name)
+      expect(user.email).toBe(userData.email)
+      expect(user.token).toBeDefined()
+    })
+
+    test('should return undefined if email or password are incorrect', async () => {
+      const userController = new UserController()
+  
+      await userController.create(
+        client,
+        'Test', 
+        'Test@gmail.com', 
+        'password123'
+      )
+
+      const user = await userController.login(client, 'Test@gmail.com', 'wrongpassword')
+
+      expect(user).toBeUndefined()
     })
   })
 })
