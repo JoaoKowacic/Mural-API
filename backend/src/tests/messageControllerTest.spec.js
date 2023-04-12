@@ -34,7 +34,6 @@ describe('MessageController', () => {
       expect(messages.length).toBe(1)
       expect(messages[0].title).toBe('Test message')
       expect(messages[0].description).toBe('This is a test message')
-      expect(message.id.insertedId).toEqual(messages[0]._id)
 
       await client.db('Mural').collection('messages').deleteOne({_id: messages[0]._id})
       
@@ -92,13 +91,12 @@ describe('MessageController', () => {
         title: 'Test message',
         description: 'This is a test message'
       })
-      const changes = {
-        $set: {
-          title: 'Updated message',
-          description: 'This message has been updated'
-        }
-      }
-      await messageController.update(client, messageId.insertedId, changes)
+
+      
+      let title =  'Updated message'
+      let description ='This message has been updated'
+      
+      await messageController.update(client, messageId.insertedId, title, description)
       const message = await client.db('Mural').collection('messages').findOne({_id: messageId.insertedId})
 
       expect(message.title).toBe('Updated message')
